@@ -1,6 +1,7 @@
 """
 visualizations.py - Interactive Plotly charts for ChurnIQ dashboard.
-Adheres to the restrained teal/blue and deep navy business-analytics aesthetic.
+Uses a refined blue/teal/coral business-analytics palette with consistent
+typography, grid styling, and hover interactions across all charts.
 """
 
 import plotly.express as px
@@ -8,14 +9,46 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-# Color tokens
-COLOR_PRIMARY = "#1d3557"
-COLOR_ACCENT = "#457b9d"
-COLOR_TEAL = "#2a9d8f"
-COLOR_CHURN = "#e63946"
-COLOR_RETAIN = "#2a9d8f"
-COLOR_NEUTRAL = "#6c757d"
-PALETTE_MODELS = ["#1d3557", "#457b9d", "#2a9d8f", "#e76f51", "#9d0208"]
+# --- Refined Color Tokens ---
+COLOR_PRIMARY = "#2563eb"
+COLOR_ACCENT = "#0ea5e9"
+COLOR_TEAL = "#0d9488"
+COLOR_CHURN = "#dc2626"
+COLOR_RETAIN = "#16a34a"
+COLOR_NEUTRAL = "#64748b"
+PALETTE_MODELS = ["#2563eb", "#0ea5e9", "#0d9488", "#f59e0b", "#dc2626"]
+
+# --- Shared Layout Template ---
+_LAYOUT_DEFAULTS = dict(
+    font=dict(family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif", size=13, color="#334155"),
+    title_font=dict(size=16, color="#0f172a", family="Inter, sans-serif"),
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
+    margin=dict(t=44, b=28, l=28, r=20),
+)
+
+
+def _apply_defaults(fig, **overrides):
+    """Apply shared layout defaults plus any per-chart overrides."""
+    merged = {**_LAYOUT_DEFAULTS, **overrides}
+    fig.update_layout(**merged)
+    # Grid styling for cartesian charts
+    fig.update_xaxes(
+        gridcolor="#e2e8f0",
+        gridwidth=0.5,
+        zerolinecolor="#cbd5e1",
+        tickfont=dict(size=11, color="#64748b"),
+        title_font=dict(size=12, color="#475569"),
+    )
+    fig.update_yaxes(
+        gridcolor="#e2e8f0",
+        gridwidth=0.5,
+        zerolinecolor="#cbd5e1",
+        tickfont=dict(size=11, color="#64748b"),
+        title_font=dict(size=12, color="#475569"),
+    )
+    return fig
 
 
 def plot_churn_distribution(df: pd.DataFrame, col: str = "Churn", title: str = "Customer Churn Breakdown"):
@@ -28,19 +61,19 @@ def plot_churn_distribution(df: pd.DataFrame, col: str = "Churn", title: str = "
     fig = go.Figure(data=[go.Pie(
         labels=counts["Status"],
         values=counts["Count"],
-        hole=0.55,
-        marker=dict(colors=colors),
+        hole=0.58,
+        marker=dict(colors=colors, line=dict(color="#ffffff", width=2)),
         textinfo="label+percent",
+        textfont=dict(size=13, color="#1e293b"),
         hovertemplate="<b>%{label}</b><br>Count: %{value:,}<br>Percentage: %{percent}<extra></extra>"
     )])
 
-    fig.update_layout(
+    fig = _apply_defaults(fig,
         title=f"<b>{title}</b>",
-        margin=dict(t=40, b=20, l=20, r=20),
-        legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="center", x=0.5),
+        margin=dict(t=44, b=12, l=12, r=12),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.12, xanchor="center", x=0.5),
         height=320,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
+        showlegend=True,
     )
     return fig
 
@@ -59,22 +92,23 @@ def plot_segment_churn(df: pd.DataFrame, segment_col: str, title: str = None):
         orientation="h",
         marker=dict(
             color=grouped["Churn_Rate"],
-            colorscale=[[0, "#2a9d8f"], [0.5, "#457b9d"], [1, "#e63946"]],
-            showscale=False
+            colorscale=[[0, "#16a34a"], [0.5, "#0ea5e9"], [1, "#dc2626"]],
+            showscale=False,
+            line=dict(color="#ffffff", width=0.5),
         ),
         text=[f"{v:.1f}%" for v in grouped["Churn_Rate"]],
         textposition="outside",
-        hovertemplate="<b>%{y}</b><br>Churn Rate: %{x:.2f}%<extra></extra>"
+        textfont=dict(size=12, color="#475569"),
+        hovertemplate="<b>%{y}</b><br>Churn Rate: %{x:.2f}%<extra></extra>",
+        width=0.6,
     ))
 
-    fig.update_layout(
+    fig = _apply_defaults(fig,
         title=f"<b>{title or f'Churn Rate by {segment_col}'}</b>",
-        xaxis=dict(title="Churn Rate (%)", range=[0, max(grouped["Churn_Rate"]) * 1.25]),
-        yaxis=dict(title=""),
-        margin=dict(t=40, b=30, l=120, r=30),
+        xaxis=dict(title="Churn Rate (%)", range=[0, max(grouped["Churn_Rate"]) * 1.28]),
+        yaxis=dict(title="", tickfont=dict(size=12, color="#334155")),
+        margin=dict(t=44, b=28, l=130, r=30),
         height=300,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
     )
     return fig
 
@@ -88,21 +122,22 @@ def plot_model_comparison_bar(metrics_df: pd.DataFrame, metric: str = "ROC-AUC")
         y=df_sorted["Model"],
         orientation="h",
         marker=dict(
-            color=["#e63946" if m == "catboost_model" or m == "CatBoost" else "#457b9d" for m in df_sorted["Model"]]
+            color=[COLOR_CHURN if m == "CatBoost" else COLOR_ACCENT for m in df_sorted["Model"]],
+            line=dict(color="#ffffff", width=0.5),
         ),
         text=[f"{v:.4f}" for v in df_sorted[metric]],
         textposition="outside",
-        hovertemplate="<b>%{y}</b><br>" + metric + ": %{x:.4f}<extra></extra>"
+        textfont=dict(size=12, color="#475569"),
+        hovertemplate="<b>%{y}</b><br>" + metric + ": %{x:.4f}<extra></extra>",
+        width=0.55,
     ))
 
-    fig.update_layout(
-        title=f"<b>Model Performance Comparison ({metric})</b>",
-        xaxis=dict(title=metric, range=[0, 1.05]),
-        yaxis=dict(title=""),
-        margin=dict(t=40, b=30, l=150, r=40),
+    fig = _apply_defaults(fig,
+        title=f"<b>Model Performance Comparison — {metric}</b>",
+        xaxis=dict(title=metric, range=[0, 1.06]),
+        yaxis=dict(title="", tickfont=dict(size=12, color="#334155")),
+        margin=dict(t=44, b=28, l=160, r=50),
         height=320,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
     )
     return fig
 
@@ -111,12 +146,11 @@ def plot_multi_roc_curves(test_eval_cache: dict):
     """Overlaid ROC curves for all models evaluated in research."""
     fig = go.Figure()
 
-    # Diagonal random baseline
     fig.add_trace(go.Scatter(
         x=[0, 1], y=[0, 1],
         mode="lines",
-        line=dict(color="#adb5bd", dash="dash", width=1.5),
-        name="Random Chance (AUC = 0.50)"
+        line=dict(color="#cbd5e1", dash="dash", width=1.5),
+        name="Random (AUC = 0.50)",
     ))
 
     models = test_eval_cache.get("models", {})
@@ -130,19 +164,17 @@ def plot_multi_roc_curves(test_eval_cache: dict):
             x=fpr, y=tpr,
             mode="lines",
             name=name,
-            line=dict(color=color, width=2.5 if "CatBoost" in name else 1.8),
+            line=dict(color=color, width=2.8 if "CatBoost" in name else 2),
             hovertemplate=f"<b>{name}</b><br>FPR: %{{x:.3f}}<br>TPR: %{{y:.3f}}<extra></extra>"
         ))
 
-    fig.update_layout(
-        title="<b>Receiver Operating Characteristic (ROC) Curves</b>",
-        xaxis=dict(title="False Positive Rate (1 - Specificity)", range=[-0.01, 1.01]),
-        yaxis=dict(title="True Positive Rate (Sensitivity / Recall)", range=[-0.01, 1.02]),
-        margin=dict(t=40, b=40, l=40, r=20),
+    fig = _apply_defaults(fig,
+        title="<b>ROC Curves — All Models</b>",
+        xaxis=dict(title="False Positive Rate (1 − Specificity)", range=[-0.01, 1.01]),
+        yaxis=dict(title="True Positive Rate (Sensitivity)", range=[-0.01, 1.02]),
+        margin=dict(t=44, b=44, l=44, r=20),
         height=420,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
+        legend=dict(orientation="h", yanchor="bottom", y=-0.28, xanchor="center", x=0.5),
     )
     return fig
 
@@ -162,19 +194,17 @@ def plot_multi_pr_curves(test_eval_cache: dict):
             x=rec, y=prec,
             mode="lines",
             name=name,
-            line=dict(color=color, width=2.5 if "CatBoost" in name else 1.8),
+            line=dict(color=color, width=2.8 if "CatBoost" in name else 2),
             hovertemplate=f"<b>{name}</b><br>Recall: %{{x:.3f}}<br>Precision: %{{y:.3f}}<extra></extra>"
         ))
 
-    fig.update_layout(
-        title="<b>Precision-Recall (PR) Curves</b>",
+    fig = _apply_defaults(fig,
+        title="<b>Precision-Recall Curves — All Models</b>",
         xaxis=dict(title="Recall", range=[-0.01, 1.01]),
         yaxis=dict(title="Precision", range=[-0.01, 1.02]),
-        margin=dict(t=40, b=40, l=40, r=20),
+        margin=dict(t=44, b=44, l=44, r=20),
         height=420,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
+        legend=dict(orientation="h", yanchor="bottom", y=-0.28, xanchor="center", x=0.5),
     )
     return fig
 
@@ -196,26 +226,25 @@ def plot_confusion_matrix_heatmap(cm: list, model_name: str = "CatBoost"):
                 y=labels[r],
                 text=f"<b>{count:,}</b><br>({pct:.1f}%)",
                 showarrow=False,
-                font=dict(color="white" if pct > 35 else "#1d3557", size=14)
+                font=dict(color="white" if pct > 35 else "#1e293b", size=14),
             ))
 
     fig = go.Figure(data=go.Heatmap(
         z=cm_norm,
         x=labels,
         y=labels,
-        colorscale=[[0, "#f8f9fa"], [0.5, "#457b9d"], [1, "#1d3557"]],
-        showscale=False
+        colorscale=[[0, "#f1f5f9"], [0.4, "#0ea5e9"], [1, "#1e3a8a"]],
+        showscale=False,
+        hovertemplate="Actual: %{y}<br>Predicted: %{x}<br>Count: %{z:.1f}%<extra></extra>",
     ))
 
-    fig.update_layout(
-        title=f"<b>Confusion Matrix — {model_name} (Test Set, N={total:,})</b>",
+    fig = _apply_defaults(fig,
+        title=f"<b>Confusion Matrix — {model_name}</b><br><sub style='font-size:11px;color:#64748b'>Test Set, N={total:,}</sub>",
         xaxis=dict(title="Predicted Outcome", side="bottom"),
         yaxis=dict(title="Actual Ground Truth", autorange="reversed"),
         annotations=annotations,
-        margin=dict(t=50, b=40, l=80, r=40),
+        margin=dict(t=58, b=36, l=80, r=40),
         height=360,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
     )
     return fig
 
@@ -228,34 +257,31 @@ def plot_feature_importance_bar(df_imp: pd.DataFrame, model_name: str = "CatBoos
         x=df_sorted["Normalized_Importance"] * 100,
         y=df_sorted["Clean_Feature"],
         orientation="h",
-        marker=dict(color="#457b9d"),
+        marker=dict(color=COLOR_ACCENT, line=dict(color="#ffffff", width=0.5)),
         text=[f"{v * 100:.1f}%" for v in df_sorted["Normalized_Importance"]],
         textposition="outside",
-        hovertemplate="<b>%{y}</b><br>Relative Importance: %{x:.2f}%<extra></extra>"
+        textfont=dict(size=11, color="#475569"),
+        hovertemplate="<b>%{y}</b><br>Relative Importance: %{x:.2f}%<extra></extra>",
+        width=0.6,
     ))
 
-    fig.update_layout(
-        title=f"<b>Global Feature Importance ({model_name})</b>",
-        xaxis=dict(title="Normalized Importance (%)", range=[0, max(df_sorted["Normalized_Importance"] * 100) * 1.25]),
-        yaxis=dict(title=""),
-        margin=dict(t=40, b=30, l=160, r=40),
+    fig = _apply_defaults(fig,
+        title=f"<b>Global Feature Importance — {model_name}</b>",
+        xaxis=dict(title="Normalized Importance (%)", range=[0, max(df_sorted["Normalized_Importance"] * 100) * 1.28]),
+        yaxis=dict(title="", tickfont=dict(size=12, color="#334155")),
+        margin=dict(t=44, b=28, l=170, r=50),
         height=450,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
     )
     return fig
 
 
 def plot_causal_quadrant_scatter(eval_df: pd.DataFrame):
-    """
-    Scatter plot of Churn Probability Without Offer vs Churn Probability With Offer.
-    Visualizes the four causal quadrants in uplift modeling.
-    """
+    """Scatter plot of Churn Probability Without Offer vs Churn Probability With Offer."""
     quadrant_colors = {
-        "Persuadable (Prime Target)": "#2a9d8f",
-        "Lost Cause (Avoid High Cost)": "#e63946",
-        "Sure Thing (Organic Retention)": "#457b9d",
-        "Sleeping Dog (Do Not Disturb)": "#9d0208"
+        "Persuadable (Prime Target)": "#16a34a",
+        "Lost Cause (Avoid High Cost)": "#dc2626",
+        "Sure Thing (Organic Retention)": "#0ea5e9",
+        "Sleeping Dog (Do Not Disturb)": "#7c2d12",
     }
 
     fig = go.Figure()
@@ -268,31 +294,26 @@ def plot_causal_quadrant_scatter(eval_df: pd.DataFrame):
                 y=sub["Predicted_Churn_With_Offer"],
                 mode="markers",
                 name=f"{segment} ({len(sub):,})",
-                marker=dict(size=7, color=color, opacity=0.7),
+                marker=dict(size=6, color=color, opacity=0.65, line=dict(width=0)),
                 hovertemplate="<b>" + segment + "</b><br>P(No Offer): %{x:.2%}<br>P(With Offer): %{y:.2%}<extra></extra>"
             ))
 
-    # Reference lines at 0.5 threshold
-    fig.add_shape(type="line", x0=0.5, x1=0.5, y0=0, y1=1, line=dict(color="#adb5bd", dash="dot"))
-    fig.add_shape(type="line", x0=0, x1=1, y0=0.5, y1=0.5, line=dict(color="#adb5bd", dash="dot"))
+    fig.add_shape(type="line", x0=0.5, x1=0.5, y0=0, y1=1, line=dict(color="#cbd5e1", dash="dot", width=1.2))
+    fig.add_shape(type="line", x0=0, x1=1, y0=0.5, y1=0.5, line=dict(color="#cbd5e1", dash="dot", width=1.2))
 
-    fig.update_layout(
-        title="<b>Causal Uplift Quadrants: Effect of Retention Intervention</b>",
-        xaxis=dict(title="Predicted Churn Risk WITHOUT Offer (P_control)", range=[-0.02, 1.02]),
-        yaxis=dict(title="Predicted Churn Risk WITH Offer (P_treated)", range=[-0.02, 1.02]),
-        margin=dict(t=40, b=40, l=40, r=20),
+    fig = _apply_defaults(fig,
+        title="<b>Causal Uplift Quadrants</b>",
+        xaxis=dict(title="Predicted Churn Risk — No Offer (Control)", range=[-0.02, 1.02]),
+        yaxis=dict(title="Predicted Churn Risk — With Offer (Treated)", range=[-0.02, 1.02]),
+        margin=dict(t=44, b=44, l=44, r=20),
         height=440,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
+        legend=dict(orientation="h", yanchor="bottom", y=-0.28, xanchor="center", x=0.5),
     )
     return fig
 
 
 def plot_uplift_rank_deciles(eval_df: pd.DataFrame):
-    """
-    Cumulative uplift / decile performance curve comparing T-Learner targeting vs Random Benchmark.
-    """
+    """Cumulative uplift / decile performance curve comparing T-Learner targeting vs Random Benchmark."""
     eval_df = eval_df.sort_values("Estimated_Uplift", ascending=False).reset_index(drop=True)
     eval_df["Decile"] = pd.qcut(eval_df.index, q=10, labels=[f"D{i+1}" for i in range(10)])
 
@@ -307,25 +328,30 @@ def plot_uplift_rank_deciles(eval_df: pd.DataFrame):
     fig.add_trace(go.Bar(
         x=decile_stats["Decile"],
         y=decile_stats["True_Uplift"] * 100,
-        name="Mean Ground-Truth Uplift in Decile (%)",
-        marker=dict(color="#2a9d8f")
+        name="Ground-Truth Uplift per Decile",
+        marker=dict(color=COLOR_TEAL, line=dict(color="#ffffff", width=0.5)),
+        text=[f"{v*100:.1f}%" for v in decile_stats["True_Uplift"]],
+        textposition="outside",
+        textfont=dict(size=10, color="#475569"),
+        hovertemplate="<b>%{x}</b><br>True Uplift: %{y:.2f}%<extra></extra>",
+        width=0.55,
     ))
     fig.add_trace(go.Scatter(
         x=decile_stats["Decile"],
         y=[overall_true * 100] * 10,
-        mode="lines",
+        mode="lines+markers",
         name=f"Random Benchmark ({overall_true * 100:.2f}%)",
-        line=dict(color="#e63946", dash="dash", width=2)
+        line=dict(color=COLOR_CHURN, dash="dash", width=2),
+        marker=dict(size=5),
+        hovertemplate="Random Benchmark: %{y:.2f}%<extra></extra>",
     ))
 
-    fig.update_layout(
-        title="<b>T-Learner Targeting Effectiveness: Uplift by Decile</b>",
+    fig = _apply_defaults(fig,
+        title="<b>T-Learner Targeting Effectiveness — Uplift by Decile</b>",
         xaxis=dict(title="Uplift Deciles (D1 = Highest Predicted Treatment Benefit)"),
-        yaxis=dict(title="True Churn Reduction Benefit (%)"),
-        margin=dict(t=40, b=40, l=40, r=20),
+        yaxis=dict(title="True Churn Reduction (%)"),
+        margin=dict(t=44, b=40, l=44, r=20),
         height=360,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.25, xanchor="center", x=0.5),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
+        legend=dict(orientation="h", yanchor="bottom", y=-0.24, xanchor="center", x=0.5),
     )
     return fig

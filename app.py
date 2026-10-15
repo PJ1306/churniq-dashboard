@@ -45,99 +45,362 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Professional Business Analytics CSS
+# Premium Analytics Dashboard CSS
 CUSTOM_CSS = """
 <style>
-    /* Main container background */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
     .stApp {
-        background-color: #f8fafc;
+        background-color: #f1f5f9;
         color: #1e293b;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* Sidebar styling */
+    /* --- Sidebar --- */
     [data-testid="stSidebar"] {
-        background-color: #0f172a !important;
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
     }
     [data-testid="stSidebar"] * {
-        color: #f1f5f9 !important;
+        color: #e2e8f0 !important;
     }
     [data-testid="stSidebar"] hr {
         border-color: #334155 !important;
+        opacity: 0.5;
+    }
+    [data-testid="stSidebar"] .stRadio > label {
+        color: #94a3b8 !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label {
+        padding: 6px 10px !important;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label:hover {
+        background-color: rgba(255,255,255,0.06);
     }
 
-    /* KPI Card styling */
+    /* --- KPI Cards --- */
     .kpi-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 22px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+        margin-bottom: 12px;
+        transition: box-shadow 0.25s ease, transform 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        border-radius: 12px 0 0 12px;
+    }
+    .kpi-card:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.06);
+        transform: translateY(-1px);
+    }
+    .kpi-card.accent-primary::before { background: #2563eb; }
+    .kpi-card.accent-warning::before { background: #f59e0b; }
+    .kpi-card.accent-danger::before { background: #dc2626; }
+    .kpi-card.accent-success::before { background: #16a34a; }
+    .kpi-card.accent-neutral::before { background: #475569; }
+
+    .kpi-title {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+    }
+    .kpi-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+    }
+    .kpi-subtext {
+        font-size: 0.78rem;
+        color: #94a3b8;
+        font-weight: 400;
+    }
+
+    /* --- Status Badges --- */
+    .badge-high {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.76rem;
+        border: 1px solid #fecaca;
+        display: inline-block;
+    }
+    .badge-medium {
+        background: #fffbeb;
+        color: #92400e;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.76rem;
+        border: 1px solid #fde68a;
+        display: inline-block;
+    }
+    .badge-low {
+        background: #f0fdf4;
+        color: #166534;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.76rem;
+        border: 1px solid #bbf7d0;
+        display: inline-block;
+    }
+
+    /* --- Callouts --- */
+    .info-callout {
+        background: #eff6ff;
+        border-left: 3px solid #2563eb;
+        padding: 14px 18px;
+        border-radius: 0 8px 8px 0;
+        margin: 12px 0;
+        font-size: 0.88rem;
+        color: #1e3a5f;
+        font-weight: 400;
+    }
+    .warning-callout {
+        background: #fffbeb;
+        border-left: 3px solid #f59e0b;
+        padding: 14px 18px;
+        border-radius: 0 8px 8px 0;
+        margin: 12px 0;
+        font-size: 0.88rem;
+        color: #78350f;
+        font-weight: 400;
+    }
+
+    /* --- Section headers --- */
+    .stApp h1 {
+        font-weight: 700 !important;
+        letter-spacing: -0.02em;
+        color: #0f172a !important;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #e2e8f0;
+        margin-bottom: 8px !important;
+    }
+    .stApp h2, .stApp h3 {
+        font-weight: 600 !important;
+        color: #1e293b !important;
+        letter-spacing: -0.01em;
+    }
+
+    /* --- Sidebar brand --- */
+    .sidebar-brand {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #f8fafc;
+        letter-spacing: -0.01em;
+    }
+    .sidebar-sub {
+        font-size: 0.78rem;
+        color: #64748b;
+        font-weight: 400;
+        margin-top: -2px;
+    }
+
+    /* --- Divider --- */
+    .section-divider {
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 18px 0;
+    }
+
+    /* --- Recommendation cards --- */
+    .rec-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 10px;
-        padding: 18px 20px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        transition: box-shadow 0.2s ease;
+    }
+    .rec-card:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .rec-priority-tag {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+    .rec-priority-high { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .rec-priority-medium { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+    .rec-priority-low { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+    /* --- Scenario rows --- */
+    .scenario-row {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .scenario-row:hover {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transform: translateY(-1px);
+    }
+
+    /* --- Data table polish --- */
+    .stDataFrame [data-testid="stDataFrame"] {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* --- Tab styling --- */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 4px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        padding: 8px 16px;
+        border-radius: 8px 8px 0 0;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: rgba(37, 99, 235, 0.06);
+    }
+
+    /* --- Expander polish --- */
+    .stExpander {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* --- Button hover --- */
+    .stButton > button {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* --- st.metric polish --- */
+    [data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 16px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        letter-spacing: -0.02em;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* --- Subtle fade-in --- */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .kpi-card, .rec-card, .scenario-row, .profile-card, .factor-card {
+        animation: fadeInUp 0.35s ease-out;
+    }
+
+    /* --- Profile card --- */
+    .profile-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
         margin-bottom: 12px;
     }
-    .kpi-title {
-        font-size: 0.82rem;
+    .profile-card .profile-label {
+        font-size: 0.72rem;
         font-weight: 600;
         color: #64748b;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
-    .kpi-value {
-        font-size: 1.85rem;
-        font-weight: 700;
+    .profile-card .profile-value {
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    /* --- Factor cards (XAI) --- */
+    .factor-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+    }
+    .factor-card.risk { border-left: 3px solid #dc2626; }
+    .factor-card.protective { border-left: 3px solid #16a34a; }
+    .factor-card .factor-title {
+        font-size: 0.88rem;
+        font-weight: 600;
         color: #0f172a;
         margin-bottom: 4px;
     }
-    .kpi-subtext {
-        font-size: 0.8rem;
+    .factor-card .factor-value {
+        font-size: 0.78rem;
         color: #64748b;
+        margin-bottom: 6px;
+    }
+    .factor-card .factor-desc {
+        font-size: 0.82rem;
+        color: #475569;
+        line-height: 1.5;
     }
 
-    /* Status Badges */
-    .badge-high {
-        background-color: #fee2e2;
-        color: #b91c1c;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 0.78rem;
-    }
-    .badge-medium {
-        background-color: #fef3c7;
-        color: #b45309;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 0.78rem;
-    }
-    .badge-low {
-        background-color: #dcfce7;
-        color: #15803d;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 0.78rem;
+    /* --- Page subtitle --- */
+    .page-subtitle {
+        font-size: 0.92rem;
+        color: #64748b;
+        font-weight: 400;
+        margin-top: -4px;
+        margin-bottom: 16px;
     }
 
-    /* Information callout */
-    .info-callout {
-        background-color: #f0fdf4;
-        border-left: 4px solid #2a9d8f;
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin: 12px 0;
-        font-size: 0.9rem;
-        color: #1e293b;
-    }
-    .warning-callout {
-        background-color: #fffbeb;
-        border-left: 4px solid #f59e0b;
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin: 12px 0;
-        font-size: 0.9rem;
-        color: #78350f;
+    /* --- Pipeline diagram --- */
+    .pipeline-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px 20px;
+        font-family: 'Inter', monospace;
+        font-size: 0.82rem;
+        color: #334155;
+        overflow-x: auto;
+        line-height: 1.5;
     }
 </style>
 """
@@ -182,8 +445,8 @@ test_eval_cache = artifacts["test_eval_cache"]
 
 # --- SIDEBAR NAVIGATION ---
 with st.sidebar:
-    st.markdown("## 🌐 ChurnIQ")
-    st.caption("Explainable Customer Intelligence Platform")
+    st.markdown('<div class="sidebar-brand">ChurnIQ</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-sub">Explainable Customer Intelligence</div>', unsafe_allow_html=True)
     st.markdown("---")
 
     page = st.radio(
@@ -202,7 +465,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("### ⚙️ Active Model")
+    st.markdown("### Active Model")
     selected_model_name = st.selectbox(
         "Scoring Model:",
         options=list(models_dict.keys()),
@@ -211,7 +474,7 @@ with st.sidebar:
     )
     active_model = models_dict[selected_model_name]
 
-    st.markdown("### 🎯 Decision Threshold")
+    st.markdown("### Decision Threshold")
     risk_threshold = st.slider(
         "Churn Risk Threshold:",
         min_value=0.10,
@@ -230,11 +493,8 @@ with st.sidebar:
 # PAGE 1: EXECUTIVE OVERVIEW
 # ==============================================================================
 if page == "1. Executive Overview":
-    st.title("📈 Executive Overview")
-    st.markdown(
-        "Management intelligence summary of customer cohort retention dynamics, "
-        "risk distribution, and revenue concentration."
-    )
+    st.title("Executive Overview")
+    st.markdown('<p class="page-subtitle">Management intelligence summary of customer cohort retention dynamics, risk distribution, and revenue concentration.</p>', unsafe_allow_html=True)
 
     # Score full dataset with active model for overview KPIs (cached)
     @st.cache_data(show_spinner=False)
@@ -245,7 +505,7 @@ if page == "1. Executive Overview":
     df_scored = get_scored_dataset(selected_model_name)
 
     # Sidebar / Top Filters
-    with st.expander("🔍 Filter Customer Cohort", expanded=False):
+    with st.expander("Filter Customer Cohort", expanded=False):
         col_f1, col_f2, col_f3, col_f4 = st.columns(4)
         with col_f1:
             contract_filter = st.multiselect(
@@ -295,7 +555,7 @@ if page == "1. Executive Overview":
     kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5 = st.columns(5)
     with kpi_col1:
         st.markdown(f"""
-        <div class="kpi-card">
+        <div class="kpi-card accent-neutral">
             <div class="kpi-title">Total Customers</div>
             <div class="kpi-value">{total_cust:,}</div>
             <div class="kpi-subtext">Active cohort size</div>
@@ -303,7 +563,7 @@ if page == "1. Executive Overview":
         """, unsafe_allow_html=True)
     with kpi_col2:
         st.markdown(f"""
-        <div class="kpi-card">
+        <div class="kpi-card accent-danger">
             <div class="kpi-title">Actual Churn Rate</div>
             <div class="kpi-value">{actual_churn_rate:.1f}%</div>
             <div class="kpi-subtext">{actual_churn_count:,} observed churners</div>
@@ -311,7 +571,7 @@ if page == "1. Executive Overview":
         """, unsafe_allow_html=True)
     with kpi_col3:
         st.markdown(f"""
-        <div class="kpi-card">
+        <div class="kpi-card accent-warning">
             <div class="kpi-title">Predicted Churn Rate</div>
             <div class="kpi-value">{pred_churn_rate:.1f}%</div>
             <div class="kpi-subtext">At {risk_threshold:.0%} threshold ({selected_model_name})</div>
@@ -319,7 +579,7 @@ if page == "1. Executive Overview":
         """, unsafe_allow_html=True)
     with kpi_col4:
         st.markdown(f"""
-        <div class="kpi-card">
+        <div class="kpi-card accent-danger">
             <div class="kpi-title">High Risk Customers</div>
             <div class="kpi-value">{high_risk_count:,}</div>
             <div class="kpi-subtext">Risk score &gt;= 0.60</div>
@@ -327,8 +587,8 @@ if page == "1. Executive Overview":
         """, unsafe_allow_html=True)
     with kpi_col5:
         st.markdown(f"""
-        <div class="kpi-card">
-            <div class="kpi-title">Monthly Rev. at Risk</div>
+        <div class="kpi-card accent-warning">
+            <div class="kpi-title">Monthly Revenue at Risk</div>
             <div class="kpi-value">${revenue_at_risk:,.0f}</div>
             <div class="kpi-subtext">Monthly recurring spend</div>
         </div>
@@ -354,19 +614,24 @@ if page == "1. Executive Overview":
         )
         counts_pred = pred_label_series.value_counts().reset_index()
         counts_pred.columns = ["Status", "Count"]
-        colors_pred = ["#e63946" if "Churn" in s else "#2a9d8f" for s in counts_pred["Status"]]
+        colors_pred = ["#dc2626" if "Churn" in s else "#16a34a" for s in counts_pred["Status"]]
         fig_pred_pie = go.Figure(go.Pie(
             labels=counts_pred["Status"],
             values=counts_pred["Count"],
-            hole=0.55,
-            marker=dict(colors=colors_pred),
-            textinfo="label+percent"
+            hole=0.58,
+            marker=dict(colors=colors_pred, line=dict(color="#ffffff", width=2)),
+            textinfo="label+percent",
+            textfont=dict(size=13, color="#1e293b"),
+            hovertemplate="<b>%{label}</b><br>Count: %{value:,}<br>Percentage: %{percent}<extra></extra>"
         ))
         fig_pred_pie.update_layout(
-            title=f"<b>Predicted Risk Distribution ({selected_model_name})</b>",
-            margin=dict(t=40, b=20, l=20, r=20),
+            title=f"<b>Predicted Risk Distribution — {selected_model_name}</b>",
+            margin=dict(t=44, b=12, l=12, r=12),
             height=320,
-            paper_bgcolor="rgba(0,0,0,0)"
+            paper_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", size=13, color="#334155"),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.12, xanchor="center", x=0.5),
+            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
         )
         st.plotly_chart(fig_pred_pie, use_container_width=True)
 
@@ -391,13 +656,19 @@ if page == "1. Executive Overview":
             color="Churn",
             nbins=30,
             barmode="overlay",
-            color_discrete_map={"No": "#2a9d8f", "Yes": "#e63946"},
+            color_discrete_map={"No": "#16a34a", "Yes": "#dc2626"},
             title="<b>Tenure Distribution by Churn Status</b>"
         )
         fig_tenure.update_layout(
             height=300,
-            margin=dict(t=40, b=30, l=30, r=20),
-            paper_bgcolor="rgba(0,0,0,0)"
+            margin=dict(t=44, b=28, l=30, r=20),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
+            xaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
+            yaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.22, xanchor="center", x=0.5),
+            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
         )
         st.plotly_chart(fig_tenure, use_container_width=True)
     with row3_col2:
@@ -408,13 +679,19 @@ if page == "1. Executive Overview":
             color="Churn",
             nbins=30,
             barmode="overlay",
-            color_discrete_map={"No": "#2a9d8f", "Yes": "#e63946"},
+            color_discrete_map={"No": "#16a34a", "Yes": "#dc2626"},
             title="<b>Monthly Charges Distribution by Churn Status</b>"
         )
         fig_charges.update_layout(
             height=300,
-            margin=dict(t=40, b=30, l=30, r=20),
-            paper_bgcolor="rgba(0,0,0,0)"
+            margin=dict(t=44, b=28, l=30, r=20),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
+            xaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
+            yaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.22, xanchor="center", x=0.5),
+            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
         )
         st.plotly_chart(fig_charges, use_container_width=True)
 
@@ -423,8 +700,8 @@ if page == "1. Executive Overview":
 # PAGE 2: CUSTOMER EXPLORER
 # ==============================================================================
 elif page == "2. Customer Explorer":
-    st.title("👥 Customer Explorer")
-    st.markdown("Search, filter, and inspect individual customer accounts across observed and predicted dimensions.")
+    st.title("Customer Explorer")
+    st.markdown('<p class="page-subtitle">Search, filter, and inspect individual customer accounts across observed and predicted dimensions.</p>', unsafe_allow_html=True)
 
     @st.cache_data(show_spinner=False)
     def get_explorer_dataset(model_name: str):
@@ -436,7 +713,7 @@ elif page == "2. Customer Explorer":
     # Filter Controls
     search_col, filter_risk_col, filter_contract_col = st.columns([2, 1, 1])
     with search_col:
-        search_query = st.text_input("🔍 Search by Customer ID:", placeholder="e.g. 7590-VHVEG or type to search...").strip()
+        search_query = st.text_input("Search by Customer ID:", placeholder="e.g. 7590-VHVEG or type to search...").strip()
     with filter_risk_col:
         risk_filter = st.selectbox("Filter Risk Tier:", ["All", "High", "Medium", "Low"])
     with filter_contract_col:
@@ -476,7 +753,7 @@ elif page == "2. Customer Explorer":
     )
 
     st.markdown("---")
-    st.markdown("### 📋 Individual Customer Profile Inspector")
+    st.markdown("### Individual Customer Profile Inspector")
 
     selected_cid = st.selectbox(
         "Select Customer ID to Inspect Detailed Profile:",
@@ -487,51 +764,70 @@ elif page == "2. Customer Explorer":
     if selected_cid:
         cust_row = df_scored[df_scored["customerID"] == selected_cid].iloc[0]
 
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
         card_col1, card_col2, card_col3 = st.columns([1, 1, 1])
         with card_col1:
-            st.markdown(f"**Customer ID:** `{cust_row['customerID']}`")
-            st.markdown(f"**Gender / Senior:** {cust_row['gender']} / {'Yes' if cust_row['SeniorCitizen'] == 1 else 'No'}")
-            st.markdown(f"**Partner / Dependents:** {cust_row['Partner']} / {cust_row['Dependents']}")
-            st.markdown(f"**Tenure:** {cust_row['tenure']} months ({cust_row['TenureGroup']})")
+            st.markdown('<div class="profile-label">Customer ID</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["customerID"]}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Gender / Senior</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["gender"]} / {"Yes" if cust_row["SeniorCitizen"] == 1 else "No"}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Partner / Dependents</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["Partner"]} / {cust_row["Dependents"]}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Tenure</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["tenure"]} months ({cust_row["TenureGroup"]})</div>', unsafe_allow_html=True)
         with card_col2:
-            st.markdown(f"**Contract:** `{cust_row['Contract']}`")
-            st.markdown(f"**Monthly Charges:** `${cust_row['MonthlyCharges']:.2f}`")
-            st.markdown(f"**Total Charges:** `${cust_row['TotalCharges']:.2f}`")
-            st.markdown(f"**Payment Method:** {cust_row['PaymentMethod']}")
+            st.markdown('<div class="profile-label">Contract</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["Contract"]}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Monthly Charges</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">${cust_row["MonthlyCharges"]:.2f}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Total Charges</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">${cust_row["TotalCharges"]:.2f}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Payment Method</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["PaymentMethod"]}</div>', unsafe_allow_html=True)
         with card_col3:
             actual_str = cust_row['Churn']
-            actual_badge = "🔴 Churned" if actual_str == "Yes" else "🟢 Retained"
+            actual_badge = "Churned" if actual_str == "Yes" else "Retained"
             prob = cust_row['Predicted_Churn_Prob']
             risk_tier = cust_row['Risk_Tier']
             badge_class = "badge-high" if risk_tier == "High" else ("badge-medium" if risk_tier == "Medium" else "badge-low")
 
-            st.markdown(f"**Actual Status:** {actual_badge}")
-            st.markdown(f"**Predicted Churn Risk:** **{prob:.2%}**")
-            st.markdown(f"**Assigned Tier:** <span class='{badge_class}'>{risk_tier} Risk</span>", unsafe_allow_html=True)
-            st.markdown(f"**Missing Support Services:** {cust_row['SupportRiskCount']} / 4")
+            st.markdown('<div class="profile-label">Actual Status</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{actual_badge}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Predicted Churn Risk</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value" style="font-size:1.1rem;font-weight:700;color:#0f172a;">{prob:.2%}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Assigned Tier</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value"><span class="{badge_class}">{risk_tier} Risk</span></div>', unsafe_allow_html=True)
+            st.markdown('<div class="profile-label">Missing Support Services</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="profile-value">{cust_row["SupportRiskCount"]} / 4</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
         # Gauge Chart of Customer Risk
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
             value=prob * 100,
-            title={'text': "Predicted Churn Probability (%)", 'font': {'size': 15}},
-            number={'suffix': "%"},
+            title={'text': "Predicted Churn Probability", 'font': {'size': 14, 'color': '#334155'}},
+            number={'suffix': "%", 'font': {'size': 28, 'color': '#0f172a'}},
             gauge={
-                'axis': {'range': [0, 100]},
-                'bar': {'color': "#1d3557"},
+                'axis': {'range': [0, 100], 'tickfont': {'size': 10, 'color': '#64748b'}},
+                'bar': {'color': "#2563eb", 'thickness': 0.18},
                 'steps': [
                     {'range': [0, 35], 'color': "#dcfce7"},
                     {'range': [35, 60], 'color': "#fef3c7"},
                     {'range': [60, 100], 'color': "#fee2e2"}
                 ],
                 'threshold': {
-                    'line': {'color': "red", 'width': 3},
-                    'thickness': 0.75,
+                    'line': {'color': "#dc2626", 'width': 3},
+                    'thickness': 0.8,
                     'value': risk_threshold * 100
                 }
             }
         ))
-        fig_gauge.update_layout(height=240, margin=dict(t=30, b=10, l=30, r=30), paper_bgcolor="rgba(0,0,0,0)")
+        fig_gauge.update_layout(
+            height=240,
+            margin=dict(t=30, b=10, l=30, r=30),
+            paper_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
+        )
         st.plotly_chart(fig_gauge, use_container_width=True)
 
 
@@ -539,10 +835,8 @@ elif page == "2. Customer Explorer":
 # PAGE 3: CHURN PREDICTION
 # ==============================================================================
 elif page == "3. Churn Prediction":
-    st.title("🎯 Churn Prediction Studio")
-    st.markdown(
-        "Interactive inference engine supporting evaluation of existing accounts or real-time scoring of hypothetical prospective profiles."
-    )
+    st.title("Churn Prediction Studio")
+    st.markdown('<p class="page-subtitle">Interactive inference engine supporting evaluation of existing accounts or real-time scoring of hypothetical prospective profiles.</p>', unsafe_allow_html=True)
 
     pred_mode = st.radio(
         "Select Scoring Mode:",
@@ -560,7 +854,7 @@ elif page == "3. Churn Prediction":
         cust_record = df_raw[df_raw["customerID"] == selected_cust_id].iloc[0]
         customer_inputs = cust_record.to_dict()
 
-        with st.expander("👁️ View Extracted Customer Attributes", expanded=True):
+        with st.expander("View Extracted Customer Attributes", expanded=True):
             attr_c1, attr_c2, attr_c3 = st.columns(3)
             with attr_c1:
                 st.write(f"**Contract:** {customer_inputs.get('Contract')}")
@@ -611,7 +905,7 @@ elif page == "3. Churn Prediction":
                 # Compute default TotalCharges
                 customer_inputs["TotalCharges"] = round(customer_inputs["MonthlyCharges"] * max(customer_inputs["tenure"], 1), 2)
 
-            submitted = st.form_submit_button("⚡ Compute Churn Probability")
+            submitted = st.form_submit_button("Compute Churn Probability")
 
     # Run Prediction
     if customer_inputs:
@@ -623,14 +917,14 @@ elif page == "3. Churn Prediction":
             high_thresh=risk_threshold
         )
 
-        st.markdown("### 📊 Prediction Diagnostic Output")
+        st.markdown("### Prediction Diagnostic Output")
         res_c1, res_c2, res_c3 = st.columns([1, 1, 1])
 
         prob_val = pred_res["churn_probability"]
 
         with res_c1:
             st.markdown(f"""
-            <div class="kpi-card">
+            <div class="kpi-card accent-primary">
                 <div class="kpi-title">Predicted Churn Risk</div>
                 <div class="kpi-value">{prob_val:.2%}</div>
                 <div class="kpi-subtext">Active Model: {selected_model_name}</div>
@@ -640,7 +934,7 @@ elif page == "3. Churn Prediction":
             pred_class = 1 if prob_val >= risk_threshold else 0
             class_str = "Predicted Churn (1)" if pred_class == 1 else "Predicted Retained (0)"
             st.markdown(f"""
-            <div class="kpi-card">
+            <div class="kpi-card accent-neutral">
                 <div class="kpi-title">Classification Decision</div>
                 <div class="kpi-value">{class_str}</div>
                 <div class="kpi-subtext">Decision Threshold: {risk_threshold:.0%}</div>
@@ -648,7 +942,7 @@ elif page == "3. Churn Prediction":
             """, unsafe_allow_html=True)
         with res_c3:
             st.markdown(f"""
-            <div class="kpi-card">
+            <div class="kpi-card accent-{('danger' if prob_val >= risk_threshold else 'success')}">
                 <div class="kpi-title">Assigned Risk Tier</div>
                 <div class="kpi-value" style="color: {pred_res['risk_color']};">{pred_res['risk_badge']}</div>
                 <div class="kpi-subtext">{pred_res['risk_summary']}</div>
@@ -666,13 +960,10 @@ elif page == "3. Churn Prediction":
 # PAGE 4: EXPLAINABILITY (XAI)
 # ==============================================================================
 elif page == "4. Explainability (XAI)":
-    st.title("🔬 Explainable AI (XAI) Architecture")
-    st.markdown(
-        "Interpreting predictive mechanics through global model feature importance "
-        "and granular individual attribution factors."
-    )
+    st.title("Explainable AI (XAI)")
+    st.markdown('<p class="page-subtitle">Interpreting predictive mechanics through global model feature importance and granular individual attribution factors.</p>', unsafe_allow_html=True)
 
-    tab_global, tab_local = st.tabs(["🌐 Global Feature Importance", "👤 Individual Customer Attribution"])
+    tab_global, tab_local = st.tabs(["Global Feature Importance", "Individual Customer Attribution"])
 
     with tab_global:
         st.markdown("### Global Influence of Features across Population")
@@ -690,7 +981,7 @@ elif page == "4. Explainability (XAI)":
                 use_container_width=True
             )
         with g_col2:
-            st.markdown("#### 📖 Plain-Language Feature Interpretation")
+            st.markdown("#### Plain-Language Feature Interpretation")
             st.markdown("""
             - **Contract Commitment**: Customers on Month-to-month contracts have negligible switching friction and account for the vast majority of churn incidents.
             - **Customer Tenure**: Early tenure (months 1-12) represents the highest vulnerability window. As tenure increases, organizational inertia dramatically lowers churn hazard.
@@ -720,20 +1011,20 @@ elif page == "4. Explainability (XAI)":
 
         exp_c1, exp_c2 = st.columns([1, 1])
         with exp_c1:
-            st.markdown(f"**Customer:** `{cid_to_explain}` | **Predicted Risk:** **{cust_pred['churn_probability']:.2%}** ({cust_pred['risk_badge']})")
-            st.markdown("#### 🚨 Primary Risk Factors (Pushing toward Churn)")
+            st.markdown(f"**Customer:** `{cid_to_explain}` &nbsp;|&nbsp; **Predicted Risk:** **{cust_pred['churn_probability']:.2%}** ({cust_pred['risk_badge']})")
+            st.markdown("#### Primary Risk Factors")
             if explanation["risk_factors"]:
                 for rf in explanation["risk_factors"]:
-                    st.markdown(f"- **{rf['feature']}** (`{rf['value']}`): {rf['description']}")
+                    st.markdown(f'<div class="factor-card risk"><div class="factor-title">{rf["feature"]}</div><div class="factor-value">{rf["value"]}</div><div class="factor-desc">{rf["description"]}</div></div>', unsafe_allow_html=True)
             else:
                 st.write("No major risk factors detected for this customer.")
 
         with exp_c2:
             st.markdown(f"**Actual Ground Truth:** `{'Churned' if sample_cust['Churn'] == 'Yes' else 'Retained'}`")
-            st.markdown("#### 🛡️ Protective Factors (Anchoring Retention)")
+            st.markdown("#### Protective Factors")
             if explanation["protective_factors"]:
                 for pf in explanation["protective_factors"]:
-                    st.markdown(f"- **{pf['feature']}** (`{pf['value']}`): {pf['description']}")
+                    st.markdown(f'<div class="factor-card protective"><div class="factor-title">{pf["feature"]}</div><div class="factor-value">{pf["value"]}</div><div class="factor-desc">{pf["description"]}</div></div>', unsafe_allow_html=True)
             else:
                 st.write("No significant protective anchors found.")
 
@@ -742,11 +1033,8 @@ elif page == "4. Explainability (XAI)":
 # PAGE 5: WHAT-IF ANALYSIS & DiCE
 # ==============================================================================
 elif page == "5. What-if Analysis & DiCE":
-    st.title("💡 What-if Analysis & DiCE Counterfactuals")
-    st.markdown(
-        "Explore actionable counterfactual alternatives: *What minimal changes to controllable features "
-        "would flip the model's prediction from Churned to Retained?*"
-    )
+    st.title("What-if Analysis & Counterfactuals")
+    st.markdown('<p class="page-subtitle">Explore actionable counterfactual alternatives: what minimal changes to controllable features would flip the model prediction from Churned to Retained?</p>', unsafe_allow_html=True)
 
     st.markdown("""
     <div class="info-callout">
@@ -768,7 +1056,7 @@ elif page == "5. What-if Analysis & DiCE":
         f"Original Churn Probability: **{base_pred['churn_probability']:.2%}**"
     )
 
-    tab_sim, tab_dice = st.tabs(["🚀 Feasible Business Retention Levers", "🎲 DiCE Optimization Engine"])
+    tab_sim, tab_dice = st.tabs(["Feasible Business Retention Levers", "DiCE Optimization Engine"])
 
     with tab_sim:
         st.markdown("#### Realistic Business Scenarios Simulator")
@@ -780,20 +1068,20 @@ elif page == "5. What-if Analysis & DiCE":
         scenarios = simulate_business_what_if_scenarios(cust_data, active_model, preprocessor)
 
         for s in scenarios:
-            with st.container():
-                sc_col1, sc_col2, sc_col3, sc_col4 = st.columns([3, 1, 1, 2])
-                with sc_col1:
-                    st.markdown(f"**{s['scenario']}**")
-                    for k, v in s["changes"].items():
-                        st.caption(f"Change `{k}`: {v}")
-                with sc_col2:
-                    st.markdown(f"**New Risk:** {s['new_prob']:.2%}")
-                    st.caption(f"Drop: **-{s['prob_reduction']:.2%}**")
-                with sc_col3:
-                    st.markdown(f"**Tier:** {s['classification']}")
-                with sc_col4:
-                    st.caption(f"Feasibility: {s['feasibility']}")
-                st.markdown("<hr style='margin: 8px 0; border-color: #e2e8f0;'>", unsafe_allow_html=True)
+            st.markdown('<div class="scenario-row">', unsafe_allow_html=True)
+            sc_col1, sc_col2, sc_col3, sc_col4 = st.columns([3, 1, 1, 2])
+            with sc_col1:
+                st.markdown(f"**{s['scenario']}**")
+                for k, v in s["changes"].items():
+                    st.caption(f"Change `{k}`: {v}")
+            with sc_col2:
+                st.markdown(f"**New Risk:** {s['new_prob']:.2%}")
+                st.caption(f"Drop: **-{s['prob_reduction']:.2%}**")
+            with sc_col3:
+                st.markdown(f"**Tier:** {s['classification']}")
+            with sc_col4:
+                st.caption(f"Feasibility: {s['feasibility']}")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     with tab_dice:
         st.markdown("#### DiCE Counterfactual Exploration (Cell 7-11 Architecture)")
@@ -812,7 +1100,7 @@ elif page == "5. What-if Analysis & DiCE":
         with col_d2:
             num_cfs = st.slider("Total Counterfactuals to Generate:", 1, 10, value=3)
 
-        if st.button("⚡ Generate DiCE Counterfactuals", type="primary"):
+        if st.button("Generate DiCE Counterfactuals", type="primary"):
             with st.spinner("Executing DiCE optimization search..."):
                 try:
                     catboost_native = artifacts.get("catboost_native")
@@ -847,10 +1135,8 @@ elif page == "5. What-if Analysis & DiCE":
 # PAGE 6: RETENTION DECISION SUPPORT
 # ==============================================================================
 elif page == "6. Retention Decision Support":
-    st.title("🛡️ Retention Decision Support System")
-    st.markdown(
-        "Translating risk probability, feature drivers, and feasibility constraints into prioritized, cautious retention actions."
-    )
+    st.title("Retention Decision Support")
+    st.markdown('<p class="page-subtitle">Translating risk probability, feature drivers, and feasibility constraints into prioritized, cautious retention actions.</p>', unsafe_allow_html=True)
 
     st.markdown("""
     <div class="info-callout">
@@ -868,14 +1154,17 @@ elif page == "6. Retention Decision Support":
 
     col_r1, col_r2 = st.columns([1, 1])
     with col_r1:
-        st.markdown(f"### Profile Summary: `{rec_cid}`")
-        st.write(f"- **Contract:** {rec_cust.get('Contract')}")
-        st.write(f"- **Tenure:** {rec_cust.get('tenure')} months")
-        st.write(f"- **Monthly Bill:** ${rec_cust.get('MonthlyCharges'):.2f}")
-        st.write(f"- **Predicted Churn Risk:** **{rec_pred['churn_probability']:.2%}** ({rec_pred['risk_badge']})")
+        st.markdown(f"### Profile Summary")
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        st.markdown(f'<div class="profile-label">Customer ID</div><div class="profile-value" style="font-size:1.05rem;font-weight:700;">{rec_cid}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="profile-label">Contract</div><div class="profile-value">{rec_cust.get("Contract")}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="profile-label">Tenure</div><div class="profile-value">{rec_cust.get("tenure")} months</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="profile-label">Monthly Bill</div><div class="profile-value">${rec_cust.get("MonthlyCharges"):.2f}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="profile-label">Predicted Churn Risk</div><div class="profile-value" style="font-size:1.15rem;font-weight:700;color:{rec_pred["risk_color"]};">{rec_pred["churn_probability"]:.2%} &mdash; {rec_pred["risk_badge"]}</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with col_r2:
-        st.markdown("### 📋 Recommended Action Plan")
+        st.markdown("### Recommended Action Plan")
         prob = rec_pred["churn_probability"]
         contract = rec_cust.get("Contract")
         support_risk = rec_cust.get("SupportRiskCount", 0)
@@ -917,24 +1206,24 @@ elif page == "6. Retention Decision Support":
             })
 
         for rec in recommendations:
-            st.markdown(f"**[{rec['priority']} Priority] {rec['action']}**")
+            prio_class = f"rec-priority-{rec['priority'].lower()}"
+            st.markdown('<div class="rec-card">', unsafe_allow_html=True)
+            st.markdown(f"<span class='rec-priority-tag {prio_class}'>{rec['priority']} Priority</span>", unsafe_allow_html=True)
+            st.markdown(f"**{rec['action']}**")
             st.write(rec["details"])
             st.caption(f"Strategy Type: {rec['type']}")
-            st.markdown("<hr style='margin: 8px 0; border-color: #e2e8f0;'>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ==============================================================================
 # PAGE 7: MODEL PERFORMANCE
 # ==============================================================================
 elif page == "7. Model Performance":
-    st.title("📊 Research Model Evaluation Dashboard")
-    st.markdown(
-        "Rigorous comparative evaluation of the 5 candidate machine learning architectures "
-        "implemented in `TechnicalSem.ipynb` on held-out test data (N=1,409)."
-    )
+    st.title("Model Evaluation")
+    st.markdown('<p class="page-subtitle">Rigorous comparative evaluation of the 5 candidate machine learning architectures on held-out test data (N=1,409).</p>', unsafe_allow_html=True)
 
     # Metrics Summary Table
-    st.markdown("### 🏆 Model Leaderboard (Test Set)")
+    st.markdown("### Model Leaderboard (Test Set)")
     st.dataframe(
         metrics_df.round(4).sort_values("ROC-AUC", ascending=False),
         use_container_width=True
@@ -956,13 +1245,13 @@ elif page == "7. Model Performance":
         st.plotly_chart(viz.plot_multi_pr_curves(test_eval_cache), use_container_width=True)
 
     # Confusion Matrix for Selected Model
-    st.markdown("### 🔲 Confusion Matrix")
+    st.markdown("### Confusion Matrix")
     eval_model_name = st.selectbox("Inspect Confusion Matrix for:", options=list(models_dict.keys()), index=0)
     cm_data = test_eval_cache["models"][eval_model_name]["cm"]
     st.plotly_chart(viz.plot_confusion_matrix_heatmap(cm_data, model_name=eval_model_name), use_container_width=True)
 
     # Analysis Commentary
-    st.markdown("### 🔍 Model Evaluation Analysis")
+    st.markdown("### Model Evaluation Analysis")
     st.markdown("""
     - **ROC-AUC Winner**: **Logistic Regression (0.8433)** achieved the highest ROC-AUC, closely followed by **CatBoost (0.8356)** and **LightGBM (0.8329)**.
     - **PR-AUC (Precision-Recall) Winner**: **CatBoost (0.6414)** achieved the best Average Precision, indicating superior calibration in ranking true churners in the presence of class imbalance (~26.5% churn).
@@ -974,35 +1263,34 @@ elif page == "7. Model Performance":
 # PAGE 8: RESEARCH & METHODOLOGY
 # ==============================================================================
 elif page == "8. Research & Methodology":
-    st.title("🎓 Research & Methodology")
-    st.markdown(
-        "Academic and technical seminar reference documentation detailing project formulation, "
-        "causal uplift modeling, and experimental findings."
-    )
+    st.title("Research & Methodology")
+    st.markdown('<p class="page-subtitle">Academic and technical seminar reference documentation detailing project formulation, causal uplift modeling, and experimental findings.</p>', unsafe_allow_html=True)
 
-    st.markdown("### 📌 Project Title & Authorship")
+    st.markdown("### Project Title & Authorship")
     st.markdown("""
     **Explainable Customer Churn Prediction Using Machine Learning for Business Decision Support**  
     *Department of Computer Engineering, Pimpri Chinchwad College of Engineering (PCCOE), Pune*  
     *Authors:* Vivek Bhise, Aniket Gadekar, Piyush Jamdade, Harish Sanke • *Guide:* Dr. Minal Shahakar
     """)
 
-    st.markdown("### 🔄 Complete End-to-End Analytics Pipeline")
+    st.markdown("### End-to-End Analytics Pipeline")
     st.markdown("""
-    ```
+    <div class="pipeline-box">
+    <pre style="margin:0;font-family:monospace;font-size:0.8rem;color:#334155;line-height:1.6;">
     ┌──────────────────────┐      ┌───────────────────────────┐      ┌─────────────────────────┐
     │  Raw Customer Data   │ ───► │ Domain Feature Engineering│ ───► │ Churn Prediction Models │
     │ (Telco 7,043 records)│      │  (6 engineered features)  │      │(Logistic, RF, CatBoost) │
     └──────────────────────┘      └───────────────────────────┘      └────────────┬────────────┘
-                                                                                  │
+                                                                                      │
     ┌──────────────────────┐      ┌───────────────────────────┐      ┌────────────▼────────────┐
     │ Retention Decision   │ ◄─── │   What-if & Counterfactual│ ◄─── │ Global & Local XAI      │
     │   Support Strategy   │      │       (DiCE Framework)    │      │ (Feature Attribution)   │
     └──────────────────────┘      └───────────────────────────┘      └─────────────────────────┘
-    ```
-    """)
+    </pre>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("### 🔬 Causal Uplift Modeling (T-Learner Validation)")
+    st.markdown("### Causal Uplift Modeling (T-Learner Validation)")
     st.markdown("""
     <div class="warning-callout">
         <b>Crucial Research Insight:</b> Traditional churn models predict who is at risk of leaving, but <b>not</b> who can be saved by an offer. Uplift modeling estimates the Conditional Average Treatment Effect (CATE):
@@ -1031,7 +1319,7 @@ elif page == "8. Research & Methodology":
     with u_chart2:
         st.plotly_chart(viz.plot_uplift_rank_deciles(test_eval_df), use_container_width=True)
 
-    st.markdown("### ⚠️ Key Limitations & Future Scope")
+    st.markdown("### Key Limitations & Future Scope")
     st.markdown("""
     1. **Synthetic Uplift Assumptions**: Uplift experimentation relies on synthetic potential outcomes (`synthetic_telco_uplift.csv`) since observational customer churn data lacks randomized retention trial ground truth.
     2. **Counterfactual Feasibility**: DiCE counterfactuals identify model boundaries, but business feasibility (e.g. willingness of customers to sign multi-year contracts) requires marketing validation.

@@ -15,22 +15,22 @@ def categorize_risk(prob: float, low_threshold: float = 0.35, high_threshold: fl
     if prob >= high_threshold:
         return {
             "tier": "High Risk",
-            "color": "#e63946",
-            "badge": "🔴 High Risk",
+            "color": "#dc2626",
+            "badge": "High Risk",
             "summary": "Customer exhibits high churn vulnerability. Urgent retention action recommended."
         }
     elif prob >= low_threshold:
         return {
             "tier": "Medium Risk",
-            "color": "#f4a261",
-            "badge": "🟡 Medium Risk",
+            "color": "#d97706",
+            "badge": "Medium Risk",
             "summary": "Customer shows moderate churn indicators. Proactive engagement advised."
         }
     else:
         return {
             "tier": "Low Risk",
-            "color": "#2a9d8f",
-            "badge": "🟢 Low Risk",
+            "color": "#16a34a",
+            "badge": "Low Risk",
             "summary": "Customer has low churn likelihood. Standard relationship maintenance sufficient."
         }
 

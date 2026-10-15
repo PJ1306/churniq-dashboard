@@ -60,11 +60,14 @@ def train_or_load_t_learner(df_synthetic: pd.DataFrame, models_dir: str = None):
     eval_path = os.path.join(save_dir, "t_learner_eval.joblib")
 
     if os.path.exists(ctrl_path) and os.path.exists(treat_path) and os.path.exists(eval_path):
-        return {
-            "model_control": joblib.load(ctrl_path),
-            "model_treated": joblib.load(treat_path),
-            "eval_results": joblib.load(eval_path)
-        }
+        try:
+            return {
+                "model_control": joblib.load(ctrl_path),
+                "model_treated": joblib.load(treat_path),
+                "eval_results": joblib.load(eval_path)
+            }
+        except Exception as e:
+            print(f"Notice: T-Learner artifact loading encountered incompatibility ({e}). Re-fitting...")
 
     X, treatment, y, cat_cols = prepare_uplift_data(df_synthetic)
 

@@ -172,25 +172,43 @@ def train_and_save_artifacts(data_dict: dict, models_dir: str = None):
 def load_artifacts(models_dir: str = None):
     """
     Loads saved models, preprocessor, and evaluation cache.
+    If any artifact is missing, incompatible, or corrupted across environments,
+    returns None to trigger clean automatic training.
     """
     save_dir = models_dir or MODELS_DIR
-    if not os.path.exists(os.path.join(save_dir, "metrics_summary.joblib")):
-        return None
+    required_files = [
+        "metrics_summary.joblib",
+        "preprocessor.joblib",
+        "feature_names.joblib",
+        "test_eval_cache.joblib",
+        "logistic_regression.joblib",
+        "random_forest.joblib",
+        "lightgbm.joblib",
+        "xgboost.joblib",
+        "catboost.joblib"
+    ]
+    for rf in required_files:
+        if not os.path.exists(os.path.join(save_dir, rf)):
+            return None
 
-    artifacts = {
-        "preprocessor": joblib.load(os.path.join(save_dir, "preprocessor.joblib")),
-        "feature_names": joblib.load(os.path.join(save_dir, "feature_names.joblib")),
-        "metrics_summary": joblib.load(os.path.join(save_dir, "metrics_summary.joblib")),
-        "test_eval_cache": joblib.load(os.path.join(save_dir, "test_eval_cache.joblib")),
-        "models": {
-            "Logistic Regression": joblib.load(os.path.join(save_dir, "logistic_regression.joblib")),
-            "Random Forest": joblib.load(os.path.join(save_dir, "random_forest.joblib")),
-            "LightGBM": joblib.load(os.path.join(save_dir, "lightgbm.joblib")),
-            "XGBoost": joblib.load(os.path.join(save_dir, "xgboost.joblib")),
-            "CatBoost": joblib.load(os.path.join(save_dir, "catboost.joblib")),
+    try:
+        artifacts = {
+            "preprocessor": joblib.load(os.path.join(save_dir, "preprocessor.joblib")),
+            "feature_names": joblib.load(os.path.join(save_dir, "feature_names.joblib")),
+            "metrics_summary": joblib.load(os.path.join(save_dir, "metrics_summary.joblib")),
+            "test_eval_cache": joblib.load(os.path.join(save_dir, "test_eval_cache.joblib")),
+            "models": {
+                "Logistic Regression": joblib.load(os.path.join(save_dir, "logistic_regression.joblib")),
+                "Random Forest": joblib.load(os.path.join(save_dir, "random_forest.joblib")),
+                "LightGBM": joblib.load(os.path.join(save_dir, "lightgbm.joblib")),
+                "XGBoost": joblib.load(os.path.join(save_dir, "xgboost.joblib")),
+                "CatBoost": joblib.load(os.path.join(save_dir, "catboost.joblib")),
+            }
         }
-    }
-    if os.path.exists(os.path.join(save_dir, "catboost_native.joblib")):
-        artifacts["catboost_native"] = joblib.load(os.path.join(save_dir, "catboost_native.joblib"))
+        if os.path.exists(os.path.join(save_dir, "catboost_native.joblib")):
+            artifacts["catboost_native"] = joblib.load(os.path.join(save_dir, "catboost_native.joblib"))
 
-    return artifacts
+        return artifacts
+    except Exception as e:
+        print(f"Notice: Artifact loading encountered environment incompatibility ({e}). Auto-training native models...")
+        return None

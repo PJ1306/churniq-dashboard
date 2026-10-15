@@ -624,14 +624,12 @@ if page == "1. Executive Overview":
             textfont=dict(size=13, color="#1e293b"),
             hovertemplate="<b>%{label}</b><br>Count: %{value:,}<br>Percentage: %{percent}<extra></extra>"
         ))
-        fig_pred_pie.update_layout(
+        fig_pred_pie = viz._apply_defaults(fig_pred_pie,
             title=f"<b>Predicted Risk Distribution — {selected_model_name}</b>",
             margin=dict(t=44, b=12, l=12, r=12),
             height=320,
-            paper_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", size=13, color="#334155"),
             legend=dict(orientation="h", yanchor="bottom", y=-0.12, xanchor="center", x=0.5),
-            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
+            showlegend=True,
         )
         st.plotly_chart(fig_pred_pie, use_container_width=True)
 
@@ -657,18 +655,12 @@ if page == "1. Executive Overview":
             nbins=30,
             barmode="overlay",
             color_discrete_map={"No": "#16a34a", "Yes": "#dc2626"},
-            title="<b>Tenure Distribution by Churn Status</b>"
         )
-        fig_tenure.update_layout(
+        fig_tenure = viz._apply_defaults(fig_tenure,
+            title="<b>Tenure Distribution by Churn Status</b>",
             height=300,
             margin=dict(t=44, b=28, l=30, r=20),
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
-            xaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
-            yaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
             legend=dict(orientation="h", yanchor="bottom", y=-0.22, xanchor="center", x=0.5),
-            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
         )
         st.plotly_chart(fig_tenure, use_container_width=True)
     with row3_col2:
@@ -680,18 +672,12 @@ if page == "1. Executive Overview":
             nbins=30,
             barmode="overlay",
             color_discrete_map={"No": "#16a34a", "Yes": "#dc2626"},
-            title="<b>Monthly Charges Distribution by Churn Status</b>"
         )
-        fig_charges.update_layout(
+        fig_charges = viz._apply_defaults(fig_charges,
+            title="<b>Monthly Charges Distribution by Churn Status</b>",
             height=300,
             margin=dict(t=44, b=28, l=30, r=20),
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
-            xaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
-            yaxis=dict(gridcolor="#e2e8f0", gridwidth=0.5, tickfont=dict(size=11, color="#64748b")),
             legend=dict(orientation="h", yanchor="bottom", y=-0.22, xanchor="center", x=0.5),
-            hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
         )
         st.plotly_chart(fig_charges, use_container_width=True)
 
@@ -822,11 +808,9 @@ elif page == "2. Customer Explorer":
                 }
             }
         ))
-        fig_gauge.update_layout(
+        fig_gauge = viz._apply_defaults(fig_gauge,
             height=240,
             margin=dict(t=30, b=10, l=30, r=30),
-            paper_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", size=12, color="#334155"),
         )
         st.plotly_chart(fig_gauge, use_container_width=True)
 

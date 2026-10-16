@@ -10,21 +10,21 @@ import pandas as pd
 import numpy as np
 
 # --- Refined Color Tokens ---
-COLOR_PRIMARY = "#2563eb"
-COLOR_ACCENT = "#0ea5e9"
-COLOR_TEAL = "#0d9488"
-COLOR_CHURN = "#dc2626"
-COLOR_RETAIN = "#16a34a"
-COLOR_NEUTRAL = "#64748b"
-PALETTE_MODELS = ["#2563eb", "#0ea5e9", "#0d9488", "#f59e0b", "#dc2626"]
+COLOR_PRIMARY = "#4f8b7e"
+COLOR_ACCENT = "#2c5d53"
+COLOR_TEAL = "#4f8b7e"
+COLOR_CHURN = "#c25953"
+COLOR_RETAIN = "#4f8b7e"
+COLOR_NEUTRAL = "#7a766d"
+PALETTE_MODELS = ["#4f8b7e", "#2c5d53", "#70a99d", "#d97736", "#c25953"]
 
 # --- Shared Layout Template ---
 _LAYOUT_DEFAULTS = dict(
-    font=dict(family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif", size=13, color="#334155"),
-    title_font=dict(size=16, color="#0f172a", family="Inter, sans-serif"),
+    font=dict(family="sans serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif", size=13, color="#1c2b2b"),
+    title_font=dict(size=16, color="#1c2b2b", family="sans serif"),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    hoverlabel=dict(bgcolor="#0f172a", font_size=12, font_color="#f8fafc", bordercolor="#334155"),
+    hoverlabel=dict(bgcolor="#1c2b2b", font_size=12, font_color="#fbfaf6", bordercolor="#4f8b7e"),
     margin=dict(t=44, b=28, l=28, r=20),
 )
 
@@ -35,18 +35,18 @@ def _apply_defaults(fig, **overrides):
     fig.update_layout(**merged)
     # Grid styling for cartesian charts
     fig.update_xaxes(
-        gridcolor="#e2e8f0",
+        gridcolor="#e5e1d5",
         gridwidth=0.5,
-        zerolinecolor="#cbd5e1",
-        tickfont=dict(size=11, color="#64748b"),
-        title_font=dict(size=12, color="#475569"),
+        zerolinecolor="#ccc7ba",
+        tickfont=dict(size=11, color="#7a766d"),
+        title_font=dict(size=12, color="#1c2b2b"),
     )
     fig.update_yaxes(
-        gridcolor="#e2e8f0",
+        gridcolor="#e5e1d5",
         gridwidth=0.5,
-        zerolinecolor="#cbd5e1",
-        tickfont=dict(size=11, color="#64748b"),
-        title_font=dict(size=12, color="#475569"),
+        zerolinecolor="#ccc7ba",
+        tickfont=dict(size=11, color="#7a766d"),
+        title_font=dict(size=12, color="#1c2b2b"),
     )
     return fig
 

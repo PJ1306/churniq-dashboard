@@ -29,6 +29,10 @@ class TestChurnIQ(unittest.TestCase):
         cls.df_telco = load_telco_data()
         cls.df_fe = engineer_features(cls.df_telco)
         cls.artifacts = load_artifacts()
+        if cls.artifacts is None:
+            data_dict = prepare_churn_data(cls.df_telco)
+            train_and_save_artifacts(data_dict)
+            cls.artifacts = load_artifacts()
         cls.assertIsNotNone(cls.artifacts, "Artifacts should be successfully loaded from models/ directory.")
         cls.models = cls.artifacts["models"]
         cls.preprocessor = cls.artifacts["preprocessor"]

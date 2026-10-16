@@ -51,24 +51,24 @@ CUSTOM_CSS = """
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     .stApp {
-        background-color: #f1f5f9;
-        color: #1e293b;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f3f1e9;
+        color: #1c2b2b;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     /* --- Sidebar --- */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+        background: linear-gradient(180deg, #162423 0%, #1e3130 100%) !important;
     }
     [data-testid="stSidebar"] * {
-        color: #e2e8f0 !important;
+        color: #fbfaf6 !important;
     }
     [data-testid="stSidebar"] hr {
-        border-color: #334155 !important;
-        opacity: 0.5;
+        border-color: #2c4240 !important;
+        opacity: 0.6;
     }
     [data-testid="stSidebar"] .stRadio > label {
-        color: #94a3b8 !important;
+        color: #a4beba !important;
         font-size: 0.82rem !important;
         font-weight: 500 !important;
     }
@@ -78,16 +78,16 @@ CUSTOM_CSS = """
         transition: background-color 0.2s ease;
     }
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label:hover {
-        background-color: rgba(255,255,255,0.06);
+        background-color: rgba(255,255,255,0.08);
     }
 
     /* --- KPI Cards --- */
     .kpi-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: #fbfaf6;
+        border: 1px solid #e5e1d5;
         border-radius: 12px;
         padding: 20px 22px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 12px rgba(0,0,0,0.02);
         margin-bottom: 12px;
         transition: box-shadow 0.25s ease, transform 0.25s ease;
         position: relative;
@@ -101,19 +101,19 @@ CUSTOM_CSS = """
         border-radius: 12px 0 0 12px;
     }
     .kpi-card:hover {
-        box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.06);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 10px 28px rgba(0,0,0,0.04);
         transform: translateY(-1px);
     }
-    .kpi-card.accent-primary::before { background: #2563eb; }
-    .kpi-card.accent-warning::before { background: #f59e0b; }
-    .kpi-card.accent-danger::before { background: #dc2626; }
-    .kpi-card.accent-success::before { background: #16a34a; }
-    .kpi-card.accent-neutral::before { background: #475569; }
+    .kpi-card.accent-primary::before { background: #4f8b7e; }
+    .kpi-card.accent-warning::before { background: #d97736; }
+    .kpi-card.accent-danger::before { background: #c25953; }
+    .kpi-card.accent-success::before { background: #4f8b7e; }
+    .kpi-card.accent-neutral::before { background: #7a766d; }
 
     .kpi-title {
         font-size: 0.72rem;
         font-weight: 600;
-        color: #64748b;
+        color: #6b665c;
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin-bottom: 6px;
@@ -121,14 +121,14 @@ CUSTOM_CSS = """
     .kpi-value {
         font-size: 1.75rem;
         font-weight: 700;
-        color: #0f172a;
+        color: #1c2b2b;
         margin-bottom: 4px;
         letter-spacing: -0.02em;
         line-height: 1.15;
     }
     .kpi-subtext {
         font-size: 0.78rem;
-        color: #94a3b8;
+        color: #7a766d;
         font-weight: 400;
     }
 

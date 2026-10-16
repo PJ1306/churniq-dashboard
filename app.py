@@ -839,19 +839,21 @@ elif page == "3. Churn Prediction":
         customer_inputs = cust_record.to_dict()
 
         with st.expander("View Extracted Customer Attributes", expanded=True):
+            st.markdown('<div class="profile-card">', unsafe_allow_html=True)
             attr_c1, attr_c2, attr_c3 = st.columns(3)
             with attr_c1:
-                st.write(f"**Contract:** {customer_inputs.get('Contract')}")
-                st.write(f"**Tenure:** {customer_inputs.get('tenure')} months")
-                st.write(f"**Monthly Charges:** ${customer_inputs.get('MonthlyCharges'):.2f}")
+                st.markdown(f'<div class="profile-label">Contract</div><div class="profile-value">{customer_inputs.get("Contract")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Tenure</div><div class="profile-value">{customer_inputs.get("tenure")} months</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Monthly Charges</div><div class="profile-value">${customer_inputs.get("MonthlyCharges"):.2f}</div>', unsafe_allow_html=True)
             with attr_c2:
-                st.write(f"**Internet Service:** {customer_inputs.get('InternetService')}")
-                st.write(f"**Tech Support:** {customer_inputs.get('TechSupport')}")
-                st.write(f"**Online Security:** {customer_inputs.get('OnlineSecurity')}")
+                st.markdown(f'<div class="profile-label">Internet Service</div><div class="profile-value">{customer_inputs.get("InternetService")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Tech Support</div><div class="profile-value">{customer_inputs.get("TechSupport")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Online Security</div><div class="profile-value">{customer_inputs.get("OnlineSecurity")}</div>', unsafe_allow_html=True)
             with attr_c3:
-                st.write(f"**Payment Method:** {customer_inputs.get('PaymentMethod')}")
-                st.write(f"**Paperless Billing:** {customer_inputs.get('PaperlessBilling')}")
-                st.write(f"**Actual Churn:** {customer_inputs.get('Churn')}")
+                st.markdown(f'<div class="profile-label">Payment Method</div><div class="profile-value">{customer_inputs.get("PaymentMethod")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Paperless Billing</div><div class="profile-value">{customer_inputs.get("PaperlessBilling")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="profile-label">Actual Churn</div><div class="profile-value">{customer_inputs.get("Churn")}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
     else:
         st.markdown("#### Enter Prospective Customer Attributes")
@@ -1034,11 +1036,11 @@ elif page == "5. What-if Analysis & DiCE":
     cust_data = df_fe[df_fe["customerID"] == target_cid].iloc[0].to_dict()
     base_pred = predict_single_customer(cust_data, active_model, preprocessor)
 
-    st.markdown(
-        f"**Original Profile:** `{target_cid}` | Contract: `{cust_data.get('Contract')}` | "
-        f"Monthly: `${cust_data.get('MonthlyCharges'):.2f}` | "
-        f"Original Churn Probability: **{base_pred['churn_probability']:.2%}**"
-    )
+    st.markdown(f'''
+    <div class="info-callout">
+        <b>Original Profile:</b> <code>{target_cid}</code> &nbsp;|&nbsp; Contract: <code>{cust_data.get('Contract')}</code> &nbsp;|&nbsp; Monthly: <code>${cust_data.get('MonthlyCharges'):.2f}</code> &nbsp;|&nbsp; Original Churn Probability: <b>{base_pred['churn_probability']:.2%}</b>
+    </div>
+    ''', unsafe_allow_html=True)
 
     tab_sim, tab_dice = st.tabs(["Feasible Business Retention Levers", "DiCE Optimization Engine"])
 
@@ -1104,9 +1106,13 @@ elif page == "5. What-if Analysis & DiCE":
                             st.success(f"Generated {len(dice_result['counterfactuals'])} diverse counterfactual candidates!")
                             for cf in dice_result["counterfactuals"]:
                                 with st.expander(f"Counterfactual #{cf['cf_id']} — New Churn Probability: {cf['churn_prob']:.2%}", expanded=True):
-                                    st.write("**Modified Features:**")
                                     for feat, change in cf["changes"].items():
-                                        st.write(f"- `{feat}`: `{change['from']}` ➔ **`{change['to']}`**")
+                                        st.markdown(f'''
+                                        <div class="factor-card protective">
+                                            <div class="factor-title">{feat}</div>
+                                            <div class="factor-value">{change['from']} &rarr; {change['to']}</div>
+                                        </div>
+                                        ''', unsafe_allow_html=True)
                         else:
                             st.warning(f"DiCE Solver note: {dice_result.get('error', 'Unable to find valid CF in bounds')}")
                             st.info("Tip: You can also use the Feasible Business Retention Levers tab for immediate deterministic simulations.")
